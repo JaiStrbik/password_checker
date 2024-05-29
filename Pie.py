@@ -34,6 +34,10 @@ def on_text_change(event):
     
     
 
+invalid_symbols = {"!,", "@", "#", "$", "%", "^", "&", "*", "~", "`", "-", "_"}
+if any(character in invalid_symbols for character in text):
+    message +- "No symbols are allaowed in password./n"
+
 
 app = gp.GooeyPieApp('Password Checker')
 app.width = 600
