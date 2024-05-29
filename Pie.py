@@ -1,41 +1,4 @@
-import gooeypie as gp
 
-# from list_of_common_passwords import common_passwords 
-# def password_list():
-#     password_list = common_passwords
-
-
-# def on_text_change(event):
-#     text = text_box.text
-#     print(text)
-
-#     if text == "Jai":
-#         label.text = "Me"
-#     elif text == "Gus":
-#         label.text = "Toothbrush"
-#     elif text == password_list():
-#         label.text = "Your Password is common"
-
-#         label.text = "Your password is unique"
-#     elif text >= int(8):   
-#         label.text = "Your password is strong"
-#     else:
-#         label.text = "Needs More Words Champ"
-   
-
-    
-    
-# app = gp.GooeyPieApp('Password Checker')
-# app.width = 600
-# app.height = 500
-# text_box = gp.Textbox(app, 60, 10)
-# text_box.add_event_listener('change', on_text_change)
-# label = gp.Label(app, 'blank')
-
-# app.set_grid(2,1)
-# app.add(text_box, 1, 1)
-# app.add(label, 2, 1)
-# app.run()
 
 
 # char_num = -
@@ -56,7 +19,9 @@ import gooeypie as gp
 from list_of_common_passwords import common_passwords 
 
 
-
+common_passwords = common_passwords()
+# for password in common_passwords:
+#     print(password)
 
 def on_text_change(event):
     text = text_box.text
@@ -66,6 +31,9 @@ def on_text_change(event):
         label.text = "Your password is strong"
     else:
         label.text = "Needs More Words Champ"
+    
+    
+
 
 app = gp.GooeyPieApp('Password Checker')
 app.width = 600
