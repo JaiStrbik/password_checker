@@ -9,26 +9,8 @@ from random import choice
 common_passwords = common_passwords()
 
 def on_text_change(event):
+    ponits = 0
     text = text_box.text
-    invalid_symbols = {"!", "@", "#", "$", "%", "^", "&", "*", "~", "`", "-", "_", "+", "=", "<", ">", "?", "/", "[]", "{", "}", ":", ";", "|"}
-    numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"}
-
-    if text in common_passwords:
-        label.text = "Your password is too common"
-    elif any(character in invalid_symbols for character in text):
-        label.text = "Your password has a symbol"
-    elif any(character in numbers for character in text):
-        label.text = "Your password has a number"
-    elif len(text) >= 13:
-        label.text = "Your password is strong"
-    else:
-        label.text = "Needs More Words Champ"
-
-
-def points():
-
-    8 
-    """When user types in password returns a rating out of 10"""
     digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
     letters = [
@@ -43,51 +25,44 @@ def points():
     symbols = [
     '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
 ]
-    if text in symbols
-        
-
-    length = 13
-
-    if length <= 13:
-        points -100
-
+    if text in common_passwords:
+        points -= 50
+    if any(character in symbols for character in text):
+        points += 20
+    if any(character in digits for character in text):
+        points += 20
+    if any(character in letters for character in text):
+        points += 20
+    if any(character in uppercase_letters for character in text):
+        points += 20
+    if len(text) >= 13:
+        points += 15
+    else:
+        points -= 50
     
-def ranking():
-    if points == 100:
-    ranking == points
-    10/10 ranking = 100 points
-    9.5/10 = 95 points
-    if points == 90:
-        print(You have a rating = 9.5)
+    
+    label.text = f'Password Score: {points}'
+    ranking_label.text = f'Ranking: {ranking(points)}/10'
+    return points in text_box
 
 
-def update_score(event):
-    team = event.widget.text  # The label text is also the score dict key
-    ranking[team] += 1
-    score_lbl.text = f' {ranking["HOME"]} - {ranking["AWAY"]} '
-
-app = gp.GooeyPieApp('Scoreboard')
-
-score_lbl = gp.StyleLabel(app, ' 0 / 10 ')
-score_lbl.font_name = 'Courier'
-score_lbl.font_weight = 'bold'
-score_lbl.background_color = 'black'
-score_lbl.font_size = 60
-score_lbl.color = 'red'
-
-home_lbl = gp.Label(app, 'HOME')
-away_lbl = gp.Label(app, 'AWAY')
-home_lbl.add_event_listener('mouse_down', update_score)
-away_lbl.add_event_listener('mouse_down', update_score)
-
-app.set_grid(2, 2)
-app.add(score_lbl, 1, 1, column_span=2)
-app.add(home_lbl, 2, 1, align='center')
-app.add(away_lbl, 2, 2, align='center')
-
-
-
-
+def ranking(points):
+    if points >= 100:
+        rating = 10
+    elif points >= 95:
+        rating = 9.5
+    elif points >= 90:
+        rating = 9.0
+    elif points >= 85:
+        rating = 8.5
+    elif points >= 80:
+        rating = 8.0
+    elif points > 50:
+        rating = 5.0
+    else:
+        print("You need a new password")
+    
+    return rating
 
 
 def generate_password(length, letters, digits, symbols):
@@ -126,19 +101,24 @@ def show_new_password(event):
     """Populates the password box with a newly generated password"""
     new_password = generate_password(length, letters, uppercase_letters, digits, symbols)
     text_box.text = new_password
+    return new_password in text_box.text
 
 app = gp.GooeyPieApp('Password Checker')
 app.width = 600
 app.height = 500
 
-check_button = gp.Button(app, 'Click Here for a Strong Password', show_new_password)
 text_box = gp.Textbox(app, 60)
 text_box.add_event_listener('change', on_text_change)
-label = gp.Label(app, '')
 
-app.set_grid(3, 1)
+check_button = gp.Button(app, 'Click Here for a Strong Password', show_new_password)
+
+label = gp.Label(app, 'Password Score: 0')
+ranking_label = gp.Label(app, 'Ranking: 0/10')
+
+app.set_grid(4, 1)
 app.add(text_box, 1, 1)
 app.add(check_button, 2, 1, align='center')
 app.add(label, 3, 1)
+app.add(ranking_label, 4, 1)
 
 app.run()
