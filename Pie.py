@@ -3,6 +3,7 @@
 import gooeypie as gp
 from list_of_common_passwords import common_passwords
 from random import choice
+from zxcvbn import zxcvbn
 
 common_passwords = common_passwords()
 
@@ -22,9 +23,13 @@ def on_text_change(event):
         'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
     ]
     symbols = [
-        '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
+        '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '', '{', '|', '}', '~'
     ]
 
+    # Use zxcvbn to get additional feedback
+    zxcvbn_results = zxcvbn(text)
+    zxcvbn_feedback = zxcvbn_results['feedback']
+    
     if len(text) >= 13:
         points += 15
     else:
@@ -49,19 +54,22 @@ def on_text_change(event):
         points += 20
     else:
         feedback_messages.append("Your password needs uppercase letters.")
-    
+    if zxcvbn_results['crack_times_display']['offline_slow_hashing_1e4_per_second'] == 'centuries':
+        points += 5
+    else:
+        feedback_messages.append("For a full 10/10 score, your password needs to take centuries to crack.")
     if not feedback_messages:
         feedback.text = "Your password is a 10/10 ranked password, You can now copy your password to clipboard."
     else:
         feedback.text = '\n'.join(feedback_messages)
 
     label.text = f'Password Score: {points}'
-    rating_value = ranking(points)
-    ranking_label.text = f'Ranking: {rating_value}/10'
-    if rating_value >= 9.5:
-        check_button.enabled = True
-    else:
-        check_button.enabled = False
+    ranking_value = ranking(points)
+    ranking_label.text = f'Ranking: {ranking_value}/10'
+    check_button.enabled = (ranking_value >= 9.5)
+    
+    # Display estimated time to crack the password
+    crack_times_label.text = f"Time to Crack: {zxcvbn_results['crack_times_display']['offline_slow_hashing_1e4_per_second']}"
 
 def ranking(points):
     if points >= 100:
@@ -88,7 +96,7 @@ def generate_password(length, uppercase_letters, letters, digits, symbols):
     return new_password
 
 def copy_to_clipboard(event):
-   app.copy_to_clipboard(text_box.text)
+    app.copy_to_clipboard(text_box.text)
 
 def show_new_password(event):
     """Populates the password box with a newly generated password"""
@@ -110,7 +118,7 @@ uppercase_letters = [
     'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 ]
 symbols = [
-    '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
+    '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '', '{', '|', '}', '~'
 ]
 length = 16
 
@@ -126,14 +134,16 @@ check_button = gp.Button(app, 'Generate Password', show_new_password)
 
 label = gp.Label(app, 'Password Score: 0')
 ranking_label = gp.Label(app, 'Ranking: 0/10')
+crack_times_label = gp.Label(app, 'Time to Crack: N/A')
 
 feedback = gp.Label(app, 'Feedback: ')
 
-app.set_grid(5, 1)
+app.set_grid(6, 1)
 app.add(text_box, 1, 1)
 app.add(check_button, 2, 1, align='center')
 app.add(label, 3, 1)
 app.add(ranking_label, 4, 1)
-app.add(feedback, 5, 1)
+app.add(crack_times_label, 5, 1)
+app.add(feedback, 6, 1)
 
 app.run()
