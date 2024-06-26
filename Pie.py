@@ -1,24 +1,17 @@
-
-
-
 import gooeypie as gp
 from list_of_common_passwords import common_passwords
 from random import choice
 from zxcvbn import zxcvbn
-
 common_passwords = common_passwords()
-
 def on_text_change(event):
     points = 0  # Correctly initialize the points variable
     text = text_box.text
     feedback_messages = []
     digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-
     letters = [
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
         'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
     ]
-
     uppercase_letters = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
         'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -26,7 +19,6 @@ def on_text_change(event):
     symbols = [
         '!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '', '{', '|', '}', '~'
     ]
-
     # Use zxcvbn to get additional feedback
     zxcvbn_results = zxcvbn(text)
     zxcvbn_feedback = zxcvbn_results['feedback']
@@ -63,14 +55,12 @@ def on_text_change(event):
         feedback.text = "Your password is a 10/10 ranked password"
     else:
         feedback.text = '\n'.join(feedback_messages)
-
     label.text = f'Password Score: {points}'
     ranking_value = ranking(points)
     ranking_label.text = f'Ranking: {ranking_value}/10'
     
     # Display estimated time to crack the password
     crack_times_label.text = f"Time to Crack: {zxcvbn_results['crack_times_display']['offline_slow_hashing_1e4_per_second']}"
-
 def ranking(points):
     if points >= 100:
         rating = 10
@@ -86,25 +76,22 @@ def ranking(points):
         rating = 0
     
     return rating
-
 def generate_password(length, uppercase_letters, letters, digits, symbols):
     """Returns a new password within a 10 out of 10 ranked password upon clicked on the button"""
     available_chars = letters + uppercase_letters + digits + symbols
     new_password = ''.join(choice(available_chars) for _ in range(length))
     return new_password
-
 def copy_to_clipboard(event):
     app.copy_to_clipboard(text_box.text)
-
 def show_new_password(event):
     """Populates the password box with a newly generated password"""
     new_password = generate_password(length, uppercase_letters, letters, digits, symbols)
     text_box.text = new_password
     on_text_change(None)  # Update the score and ranking immediately
-
 def toggle_mask(event):
     text_box.secret = not text_box.secret
 
+# Character sets
 
 
 
@@ -139,7 +126,6 @@ letters = [
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
     'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 ]
-
 uppercase_letters = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
     'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -158,18 +144,18 @@ text_box_label = gp.Label(app, 'Enter Password:')
 text_box = gp.Secret(app)
 text_box.width = 30  # Adjust width to make it smaller
 text_box.add_event_listener('change', on_text_change)
-
 check = gp.Checkbox(app, 'Show Password')
 check.add_event_listener('change', toggle_mask)
 
+check_button = gp.Button(app, 'Generate Password', show_new_password)
 generate_button = gp.Button(app, 'Generate Password', show_new_password)
 copy_button = gp.Button(app, 'Copy to Clipboard', copy_to_clipboard)
 label = gp.Label(app, 'Password Score: 0')
 ranking_label = gp.Label(app, 'Ranking: 0/10')
 crack_times_label = gp.Label(app, 'Time to Crack: N/A')
-
 feedback_label = gp.Label(app, 'Feedback:')
 feedback = gp.Label(app, '')
+
 
 question_mark_button = gp.ImageButton(app, 'q10.png', None, '')
 information_button = gp.ImageButton(app, 'i1.png', None, '')
@@ -192,12 +178,3 @@ app.add(question_mark_button, 10, 3, align='center')
 app.add(information_button, 10, 1, align='center')
 
 app.run()
-
-
-
-
-
-
-
-
-
