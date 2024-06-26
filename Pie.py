@@ -1,4 +1,7 @@
 
+
+
+
 import gooeypie as gp
 from list_of_common_passwords import common_passwords
 from random import choice
@@ -30,9 +33,9 @@ def on_text_change(event):
     zxcvbn_feedback = zxcvbn_results['feedback']
     
     if len(text) >= 13:
-        points += 15
+        points += 10
     else:
-        points -= 50
+        points -= 30
         feedback_messages.append("Your password needs to have at least 13 characters.")
     if text in common_passwords:
         points -= 50
@@ -54,7 +57,7 @@ def on_text_change(event):
     else:
         feedback_messages.append("Your password needs uppercase letters.")
     if zxcvbn_results['crack_times_display']['offline_slow_hashing_1e4_per_second'] == 'centuries':
-        points += 5
+        points += 10
     else:
         feedback_messages.append("For a full 10/10 score, your password needs to take centuries to crack.")
     if not feedback_messages:
@@ -66,17 +69,12 @@ def on_text_change(event):
     ranking_value = ranking(points)
     ranking_label.text = f'Ranking: {ranking_value}/10'
     
-    
     # Display estimated time to crack the password
     crack_times_label.text = f"Time to Crack: {zxcvbn_results['crack_times_display']['offline_slow_hashing_1e4_per_second']}"
-
-
 
 def ranking(points):
     if points >= 100:
         rating = 10
-    elif points >= 95:
-        rating = 9.5
     elif points >= 90:
         rating = 9.0
     elif points >= 85:
@@ -147,15 +145,20 @@ crack_times_label = gp.Label(app, 'Time to Crack: N/A')
 feedback_label = gp.Label(app, 'Feedback:')
 feedback = gp.Label(app, '')
 
-app.set_grid(10, 1)
-app.add(text_box_label, 1, 1, align='center', valign='middle')
-app.add(text_box, 2, 1, align='center', valign='middle')
-app.add(check, 3, 1, align='center')
-app.add(check_button, 4, 1, align='center')
-app.add(label, 5, 1, align='center')
-app.add(ranking_label, 6, 1, align='center')
-app.add(crack_times_label, 7, 1, align='center')
-app.add(feedback_label, 8, 1, align='center')
-app.add(feedback, 9, 1, align='center')
-app.add(copy_button, 10,1, align='center')
+question_mark_button = gp.ImageButton(app, 'Q1.png', None, '')
+Information_Button = gp.ImageButton(app, 'i1.png', None,'')
+
+app.set_grid(10, 3)
+app.add(text_box_label, 1, 2, align='center', valign='middle')
+app.add(text_box, 2, 2, align='center', valign='middle')
+app.add(check, 3, 2, align='center')
+app.add(check_button, 4, 2, align='center')
+app.add(label, 5, 2, align='center')
+app.add(ranking_label, 6, 2, align='center')
+app.add(crack_times_label, 7, 2, align='center')
+app.add(feedback_label, 8, 2, align='center')
+app.add(feedback, 9, 2, align='center')
+app.add(copy_button, 10, 2, align='center')
+app.add(question_mark_button, 10, 3, align='center')
+app.add(Information_Button, 10, 1, allign='center')
 app.run()
