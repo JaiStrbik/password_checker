@@ -1,4 +1,4 @@
-SaintLock By Jai.S
+# SaintLock By Jai.S
 
 For my term 2 assessment tasks I have been tasked of developing a Python and Gooey-Pie application to protect
 your personal information from hackers in this ever-changing technological world as data breaches has become 
